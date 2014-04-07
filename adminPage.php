@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <?php
+            echo "<h3>Administrator Page</h3>";
+            echo "User id: <input type='text'></input><br>";
+            echo "<select>
+                    <option value='viewInfo'>View user's information</option>
+                    <option value='resetPass'>Reset password</option>
+                    <option value='deleteUser'>Delete User</option>
+                    <option value='addUser'>Add User</option>
+                    <option value='updateUser'>Update User Information</option> 
+                </select> ";
+            echo " <input type='submit'></input>";
+        ?>
+    </body>
+</html>
+
