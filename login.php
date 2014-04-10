@@ -35,7 +35,7 @@
         else
         {
           $_SESSION['isAdmin'] == 'no';
-          header("Location: studentPage.html");
+          header("Location: studentPage.php");
           die();
         }
       }
