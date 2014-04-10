@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -10,7 +13,7 @@ and open the template in the editor.
         <title></title>
     </head>
     <body>
-        <?php
+          <?php
             echo "Session " . $_SESSION['loginId'] . "<br>";
             echo "<h3>Student Page</h3>";
             echo "<form method='post' action='student.php'>";
