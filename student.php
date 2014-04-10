@@ -1,6 +1,6 @@
 <?php
 	session_start(); 
-    include 'vars.php';
+    include 'global.php';
     $mysqli = new mysqli($host, $user, $pass,$db);
 
     /* check connection */
@@ -24,13 +24,6 @@
     else
       echo "Passwords do not match";
 
-    function test_input($data)
-    {
-      $data = trim($data);
-      $data = stripslashes($data);
-      $data = htmlspecialchars($data);
-      return $data;
-    }
     function changePassword( $mysqli, $pass, $loginId )
     {
       $changePasswordQuery ="UPDATE user
