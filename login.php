@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include 'vars.php';
+    include 'global.php';
     $mysqli = new mysqli($host, $user, $pass,$db);
 
     /* check connection */
@@ -16,15 +16,6 @@
       $loginId = test_input($_POST["loginId"]);
       $password = test_input($_POST["password"]);
     }
-    //echo "Thanks for logging in: " . $loginId;
-
-    function test_input($data)
-    {
-      $data = trim($data);
-      $data = stripslashes($data);
-      $data = htmlspecialchars($data);
-      return $data;
-    }
 
     $dispQuery ="Select userId, password, isAdmin from user";
     $dispResult = $mysqli->query($dispQuery);
@@ -38,12 +29,14 @@
         if( $row['isAdmin'] == 1 )
         {
           $_SESSION['isAdmin'] == 'yes';
-          include 'adminPage.html';
+          header("Location: adminPage.php");
+          die();
         }
         else
         {
           $_SESSION['isAdmin'] == 'no';
-          include 'studentPage.php';
+          header("Location: studentPage.html");
+          die();
         }
       }
        $rows[] = $row;

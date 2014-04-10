@@ -1,12 +1,13 @@
 <?php
-    include 'vars.php';
-    $mysqli = new mysqli($host, $user, $pass,$db);
+    include 'global.php';
+    $mysqli = new mysqli($host, $user, $pass, $db);
 
     /* check connection */
     if (mysqli_connect_errno()) {
        printf("Connect failed: %s\n", mysqli_connect_error());
        exit();
     }
+
     // define variables and set to empty values
     $loginId = $method = $password = "";
     $isAdmin = 0;
@@ -19,18 +20,13 @@
       $isAdmin = test_input($_POST["isAdmin"]);
     }
 
-    function test_input($data)
-    {
-      $data = trim($data);
-      $data = stripslashes($data);
-      $data = htmlspecialchars($data);
-      return $data;
-    }
+    $_SESSION['type'] = $method;
 
     switch( $method )
     {
       case "viewInfo":
-        viewUserInfo( $mysqli, $loginId );
+        header("Location: adminPage.php?id=" . $loginId);               
+        die();
         break;
       case "resetPass":
         resetPassword( $mysqli, $loginId );
@@ -46,33 +42,13 @@
         break;
     }
 
-    function viewUserInfo( $mysqli, $loginId )
-    {
-      $viewUserQuery ="Select userId, password, isAdmin from user
-                       WHERE userId='$loginId'";
-      $viewUserResult = $mysqli->query($viewUserQuery);
-      $found = 0;
-      while($row = $viewUserResult->fetch_array())
-      {
-          $found = 1;
-          echo "Information for <b>" . $loginId . "</b><br>";
-          echo "Password: " . $row['password'] . "<br>";
-          echo "Is Admin: " . $row['isAdmin'] . "<br>";
-          include 'adminPage.html';
-      }
-      if($found == 0 )
-        echo "User not found";
-    }
-
     function resetPassword( $mysqli, $loginId )
     {
       $resetPasswordQuery = "UPDATE user
                              SET password = 'default'
                              WHERE userId = '$loginId'";
       $resetPasswordResult = $mysqli->query($resetPasswordQuery);
-      $mysqli->close();                                                          
-      header("Location: adminPage.html");                                        
-      die();
+      $_SESSION['status'] = 1;
     }
 
     function deleteUser( $mysqli, $loginId )
@@ -80,20 +56,24 @@
       $deleteUserQuery = "DELETE from user
                           WHERE userId = '$loginId'";
       $deleteUserResult = $mysqli->query($deleteUserQuery);
-      $mysqli->close();                                                         
-      header("Location: adminPage.html");                                       
-      die();
+      $_SESSION['status'] = 1;
     }
+
     function addUser( $mysqli, $loginId, $password )
     {
       $addUserQuery = "INSERT INTO user VALUES ('$loginId', '$password', '$isAdmin')";
       $addUserResult = $mysqli->query($addUserQuery);
-      header("Location: adminPage.html?" . $mysqli->affected_rows);
-      $mysqli->close();
-
-      die();
+      $_SESSION['status'] = 1;
     }
+
     function updateUser( $mysqli, $loginId )
     {
+      $updateUserQuery = "UPDATE user SET ";
+      $updateUserResult = $mysqli->query($addUserQuery);
+      $_SESSION['status'] = 1;
     }
+
+    $mysqli->close();
+    header("Location: adminPage.php");
+    die();
 ?>
