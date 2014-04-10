@@ -30,7 +30,7 @@
                             SET password= '$pass'
                             WHERE userId = '$loginId'";
       $changePasswordResult = $mysqli->query($changePasswordQuery);
-      $_SESSION['changePassword'] = $mysqli->affected_rows;
+      $_SESSION['changePasswordSuccess'] = $mysqli->affected_rows;
       header("Location: studentPage.php?" . $mysqli->affected_rowa);
       $mysqli->close();
 

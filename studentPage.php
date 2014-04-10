@@ -14,6 +14,15 @@ and open the template in the editor.
     </head>
     <body>
           <?php
+            switch($_SESSION['changePasswordSuccess'])
+            {
+              case 0:
+                  echo "Failed to change password.<br>";
+                  break;
+              case 1:
+                  echo "Password changed successfully<br>";
+                  break;
+            }           
             echo "Session " . $_SESSION['loginId'] . "<br>";
             echo "<h3>Student Page</h3>";
             echo "<form method='post' action='student.php'>";
