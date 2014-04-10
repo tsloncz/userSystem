@@ -1,15 +1,35 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+<?php
+session_start();
+?>
 <html>
     <head>
         <meta charset="UTF-8">
         <title></title>
     </head>
     <body>
+<?php
+if($_SESSION['type'] != "")
+{
+  switch($_SESSION['type'])
+  {
+    case "resetPass":
+      $out = "Password reset ";
+      break;
+    case "deleteUser":
+      $out = "User deletion ";
+      break;
+    case "addUser":
+      $out = "User creation ";
+      break;
+    case "updateUser":
+      $out = "User update ";
+      break;
+  }
+  $out .= $_SESSION['status'] ? "successful!" : "unsuccessful!";
+  $_SESSION['type'] = "";
+  echo "<p>" . $out . "</p>";
+}
+?>
         <h3>Administrator Page</h3>
         Password and Administrator only required for update and add.<br>
         <form method='post' action='admin.php'>

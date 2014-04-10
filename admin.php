@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include 'global.php';
     $mysqli = new mysqli($host, $user, $pass, $db);
 
