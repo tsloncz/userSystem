@@ -39,7 +39,7 @@
         deleteUser( $mysqli, $loginId );
         break;
       case "addUser":
-        echo "add";
+        addUser( $mysqli, $loginId, $password );
         break;
       case "updateUser":
         updateUser( $mysqli, $loginId, $password, $isAdmin );
@@ -70,8 +70,9 @@
                              SET password = 'default'
                              WHERE userId = '$loginId'";
       $resetPasswordResult = $mysqli->query($resetPasswordQuery);
-      echo "Password reset for <b>" . $loginId . "</b></br>";
-      include 'adminPage.html';
+      $mysqli->close();                                                          
+      header("Location: adminPage.html");                                        
+      die();
     }
 
     function deleteUser( $mysqli, $loginId )
@@ -79,15 +80,20 @@
       $deleteUserQuery = "DELETE from user
                           WHERE userId = '$loginId'";
       $deleteUserResult = $mysqli->query($deleteUserQuery);
-      echo "User " . $loginId . " deleted.";
-      include 'adminPage.html';
+      $mysqli->close();                                                         
+      header("Location: adminPage.html");                                       
+      die();
     }
-    function addUser( $mysqli, $loginId )
+    function addUser( $mysqli, $loginId, $password )
     {
+      $addUserQuery = "INSERT INTO user VALUES ('$loginId', '$password', '$isAdmin')";
+      $addUserResult = $mysqli->query($addUserQuery);
+      header("Location: adminPage.html?" . $mysqli->affected_rows);
+      $mysqli->close();
+
+      die();
     }
     function updateUser( $mysqli, $loginId )
     {
     }
-    /* close connection */
-    $mysqli->close();
 ?>
