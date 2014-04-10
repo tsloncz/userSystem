@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include 'vars.php';
     $mysqli = new mysqli($host, $user, $pass,$db);
 
@@ -25,25 +26,31 @@
       return $data;
     }
 
-    $dispQuery ="Select userId, password from user";
+    $dispQuery ="Select userId, password, isAdmin from user";
     $dispResult = $mysqli->query($dispQuery);
     $found = 0;
     while($row = $dispResult->fetch_array())
     {
+      if( $row['userId'] == $loginId && $row['password']==$password)
+      {
+        $_SESSION['loginId'] = $loginId;
+        $found = 1;
+        if( $row['isAdmin'] == 1 )
+        {
+          $_SESSION['isAdmin'] == 'yes';
+          include 'adminPage.html';
+        }
+        else
+        {
+          $_SESSION['isAdmin'] == 'no';
+          include 'studentPage.php';
+        }
+      }
        $rows[] = $row;
     }
-    foreach($rows as $row )
-    {
-       if( $row['userId'] == $loginId && $row['password']==$password)
-       {
-         $found = 1;
-         echo "Found password " . $password . " for user " . $userId ."<br>";
-       }
-    }
     if($found == 0)
-     echo "nope";
+     echo "Incorrect login id/password";
 
     /* close connection */
     $mysqli->close();
 ?>
-

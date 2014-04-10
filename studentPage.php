@@ -11,10 +11,13 @@ and open the template in the editor.
     </head>
     <body>
         <?php
+            echo "Session " . $_SESSION['loginId'] . "<br>";
             echo "<h3>Student Page</h3>";
-            echo "Enter new password: <input type='text'></input><br>";
-            echo "Renter new password: <input type='text'></input><br>";
-            echo " <input type='submit'></input>";
+            echo "<form method='post' action='student.php'>";
+              echo "Enter new password: <input type='text' name='pass1'></input><br>";
+              echo "Renter new password: <input type='text' name='pass2'></input><br>";
+              echo " <input type='submit'></input>";
+            echo "</form>";
         ?>
     </body>
 </html>
