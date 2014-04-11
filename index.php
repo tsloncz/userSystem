@@ -1,18 +1,27 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+<?php
+session_start();
+if(array_key_exists("loginId", $_SESSION) &&
+   array_key_exists("isAdmin", $_SESSION))
+{
+  if($_SESSION["isAdmin"] == "yes")
+  {
+    header("Location: adminPage.php");
+    die();
+  }
+  else if($_SESSION["isAdmin"] == "no")
+  {
+    header("Location: adminPage.php");
+    die();
+  }
+}
+?>
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width">
-    </head>
-    <body>
-        <h3>Login Page</h3>
-        <form name="loginInfo" action="login.php" method="post">
+<head>
+    <title>CSE 480 Project 2</title>
+</head>
+<body>
+    <h3>Login Page</h3>
+    <form name="loginInfo" action="login.php" method="post">
             <table>
                 <tr>
                     <td>

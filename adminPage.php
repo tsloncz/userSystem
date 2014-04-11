@@ -3,8 +3,7 @@ session_start();
 ?>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title></title>
+        <title>CSE 480 Project 2</title>
     </head>
     <body>
 <?php
@@ -31,6 +30,11 @@ if($_SESSION['type'] != "")
 }
 ?>
         <h3>Administrator Page</h3>
+        <?php
+          echo "<p>Logged in as " . $_SESSION['loginId'] . " ";
+          echo "<a href=\"logout.php\">Logout</a></p>";
+        ?>
+
         Password and Administrator only required for update and add.<br>
         <form method='post' action='admin.php'>
           User id: <input type='text' name='loginId'></input><br>

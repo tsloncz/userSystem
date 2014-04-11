@@ -28,15 +28,15 @@
         $found = 1;
         if( $row['isAdmin'] == 1 )
         {
-          $_SESSION['isAdmin'] == 'yes';
+          $_SESSION['isAdmin'] = 'yes';
           header("Location: adminPage.php");
-          die();
+          exit();
         }
         else
         {
-          $_SESSION['isAdmin'] == 'no';
+          $_SESSION['isAdmin'] = 'no';
           header("Location: studentPage.php");
-          die();
+          exit();
         }
       }
        $rows[] = $row;
