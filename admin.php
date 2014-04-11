@@ -25,8 +25,10 @@
 
     switch( $method )
     {
-      case "viewInfo":
-        header("Location: adminPage.php?id=" . $loginId);               
+    case "viewInfo":
+        $_SESSION["view_loginId"] = $loginId;
+        unset($_SESSION['type']);
+        header("Location: adminPage.php");
         die();
         break;
       case "resetPass":

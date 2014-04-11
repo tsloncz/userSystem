@@ -7,7 +7,40 @@ session_start();
     </head>
     <body>
 <?php
-if($_SESSION['type'] != "")
+if(isset($_SESSION["view_loginId"]))
+{
+  include "global.php";
+  $mysqli = new mysqli($host, $user, $pass,$db);
+  if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+  }
+  $view_query = "select userId, password, isAdmin from user where ";
+  $view_query .= "userId = '" . $_SESSION["view_loginId"] . "'";
+  $view_query_result = $mysqli->query($view_query);
+  if($view_query_result != NULL)
+  {
+    $row =  $view_query_result->fetch_assoc();
+    echo "<p>Information for user " . $row["userId"] . "</p>";
+    echo "<p>Password: " . $row["password"] . "<br/>";
+    echo "Is admin: ";
+    if($row["isAdmin"])
+    {
+      echo "true";
+    }
+    else
+    {
+      echo "false";
+    }
+    echo "</p>";
+  }
+  else
+  {
+    echo "<p>User not found</p>";
+  }
+  unset($_SESSION["view_loginId"]);
+}
+else if(isset($_SESSION['type']))
 {
   switch($_SESSION['type'])
   {
@@ -25,7 +58,7 @@ if($_SESSION['type'] != "")
       break;
   }
   $out .= $_SESSION['status'] ? "successful!" : "unsuccessful!";
-  $_SESSION['type'] = "";
+  unset($_SESSION['type']);
   echo "<p>" . $out . "</p>";
 }
 ?>
