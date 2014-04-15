@@ -18,7 +18,8 @@ if(isset($_SESSION["view_loginId"]))
   $view_query = "select userId, password, isAdmin from user where ";
   $view_query .= "userId = '" . $_SESSION["view_loginId"] . "'";
   $view_query_result = $mysqli->query($view_query);
-  if($view_query_result != NULL)
+	$found = $view_query_result->num_rows;
+  if($found != 0)
   {
     $row =  $view_query_result->fetch_assoc();
     echo "<p>Information for user " . $row["userId"] . "</p>";

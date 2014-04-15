@@ -69,11 +69,26 @@
       $_SESSION['status'] = 1;
     }
 
-    function updateUser( $mysqli, $loginId )
+    function updateUser( $mysqli, $loginId, $password, $isAdmin )
     {
-      $updateUserQuery = "UPDATE user SET ";
-      $updateUserResult = $mysqli->query($addUserQuery);
-      $_SESSION['status'] = 1;
+			if( $password == '')
+			{	
+		    $updateUserQuery = "UPDATE user
+														SET isAdmin='$isAdmin'
+														where userId='$loginId'";
+			}	
+			else
+			{
+		    $updateUserQuery = "UPDATE user
+														SET password='$password',isAdmin='$idAdmin'
+														where userId='$loginId'";
+			}
+      $updateUserResult = $mysqli->query($updateUserQuery);
+			$success = $updateUserResult->num_rows;
+			if( $success == 0 )
+      	$_SESSION['status'] = 0;
+			else
+				$_SESSION['status'] = 1;
     }
 
     $mysqli->close();
