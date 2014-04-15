@@ -11,7 +11,7 @@
     // define variables and set to empty values
     $pass1 = $pass2 = "";
     $loginId = $_SESSION['loginId'];
-    echo $loginId . ' is user<br>';
+    //echo $loginId . ' is user<br>';
     if ($_SERVER["REQUEST_METHOD"] == "POST")
     {
       $pass1 = test_input($_POST["pass1"]);
@@ -19,7 +19,7 @@
     }
     //echo "Thanks for logging in: " . $loginId;
     
-    if( $pass1 == $pass2 )
+    if( $pass1 == $pass2 && $pass1 != "")
       changePassword( $mysqli, $pass1, $loginId );
     else
       echo "Passwords do not match";
@@ -27,27 +27,14 @@
     function changePassword( $mysqli, $pass, $loginId )
     {
       $changePasswordQuery ="UPDATE user
-                   SET password= '$pass'
-                   WHERE userId = '$loginId'";
+                            SET password= '$pass'
+                            WHERE userId = '$loginId'";
       $changePasswordResult = $mysqli->query($changePasswordQuery);
-      $found = 0;
-      echo "Updated " . $loginId . "'s password to " . $pass;
-      /*while($row = $dispResult->fetch_array())
-      {
-        if( $row['userId'] == $loginId && $row['password']==$password)
-        {
-          $found = 1;
-          if( $row['isAdmin'] == 1 )
-          {
-            include 'adminPage.html';
-          }
-          else
-          {
-            include 'studentPage.php';
-          }
-        }
-        $rows[] = $row;
-      }*/
+      $_SESSION['changePasswordSuccess'] = $mysqli->affected_rows;
+      header("Location: studentPage.php?" . $mysqli->affected_rowa);
+      $mysqli->close();
+
+     die();
     }
     /* close connection */
     $mysqli->close();

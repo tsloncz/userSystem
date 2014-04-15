@@ -19,7 +19,8 @@
   $view_query .= "userId = '" . $loginId . "' and password='";
   $view_query .= $password . "'";
   $view_query_result = $mysqli->query($view_query);
-  if($view_query_result != NULL)
+	$found = $view_query_result->num_rows;
+  if( $found != 0)
   {
     $row = $view_query_result->fetch_assoc();
     $_SESSION['loginId'] = $row["userId"];
@@ -39,5 +40,6 @@
   else
   {
     echo "<p>Incorrect user or password</p>";
+		echo "<a href='index.php'>Try again</a>";
   }
 ?>
