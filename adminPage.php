@@ -22,7 +22,7 @@ if(isset($_SESSION["view_loginId"]))
   if($found != 0)
   {
     $row =  $view_query_result->fetch_assoc();
-    echo "<p>Information for user " . $row["userId"] . "</p>";
+    echo "<p>Information for user<b> " . $row["userId"] . "</b></p>";
     echo "<p>Password: " . $row["password"] . "<br/>";
     echo "Is admin: ";
     if($row["isAdmin"])
@@ -65,7 +65,7 @@ else if(isset($_SESSION['type']))
 ?>
         <h3>Administrator Page</h3>
         <?php
-          echo "<p>Logged in as " . $_SESSION['loginId'] . " ";
+          echo "<p>Logged in as<b> " . $_SESSION['loginId'] . "</b> ";
           echo "<a href=\"logout.php\">Logout</a></p>";
         ?>
 

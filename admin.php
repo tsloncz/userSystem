@@ -38,7 +38,7 @@
         deleteUser( $mysqli, $loginId );
         break;
       case "addUser":
-        addUser( $mysqli, $loginId, $password );
+        addUser( $mysqli, $loginId, $password, $isAdmin );
         break;
       case "updateUser":
         updateUser( $mysqli, $loginId, $password, $isAdmin );
@@ -51,7 +51,11 @@
                              SET password = 'default'
                              WHERE userId = '$loginId'";
       $resetPasswordResult = $mysqli->query($resetPasswordQuery);
-      $_SESSION['status'] = 1;
+      $success = $resetPasswordResult->num_rows;
+			if( $success == 0 )
+      	$_SESSION['status'] = 0;
+			else
+				$_SESSION['status'] = 1;
     }
 
     function deleteUser( $mysqli, $loginId )
@@ -59,14 +63,22 @@
       $deleteUserQuery = "DELETE from user
                           WHERE userId = '$loginId'";
       $deleteUserResult = $mysqli->query($deleteUserQuery);
-      $_SESSION['status'] = 1;
+      $success = $deleteUserResult->num_rows;
+			if( $success == 0 )
+      	$_SESSION['status'] = 0;
+			else
+				$_SESSION['status'] = 1;
     }
 
     function addUser( $mysqli, $loginId, $password )
     {
       $addUserQuery = "INSERT INTO user VALUES ('$loginId', '$password', '$isAdmin')";
       $addUserResult = $mysqli->query($addUserQuery);
-      $_SESSION['status'] = 1;
+      $success = $addUserResult->num_rows;
+			if( $success == 0 )
+      	$_SESSION['status'] = 0;
+			else
+				$_SESSION['status'] = 1;
     }
 
     function updateUser( $mysqli, $loginId, $password, $isAdmin )

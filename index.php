@@ -10,7 +10,7 @@ if(array_key_exists("loginId", $_SESSION) &&
   }
   else if($_SESSION["isAdmin"] == "no")
   {
-    header("Location: adminPage.php");
+    header("Location: studentPage.php");
     die();
   }
 }
