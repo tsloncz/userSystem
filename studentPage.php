@@ -15,17 +15,6 @@ session_start();
 							 printf("Connect failed: %s\n", mysqli_connect_error());
 							 exit();
 						}
-						if( $_SESSION['method'] == 'getCourses' )
-						{
-								getCourses( $mysqli );
-						}
-						else if( $_SESSION['method'] == 'changePassword' )
-						{
-								if( $_SESSION['status'] == 1 )
-									echo "Password change successful<br>";
-								else
-									echo "Failed to change password<br>";
-						}
 						
             echo "<h3>Student Page</h3>";
             echo "<p>Logged in as<b> " . $_SESSION['loginId'] . "</b> ";
@@ -40,7 +29,21 @@ session_start();
 						echo "<form method='post' action='student.php'>";
 						echo "<input type='hidden' name='method' value='getCourses' />";
             echo " <input type='submit' value='Find Available Courses'></input>";
-            echo "</form>";
+            echo "</form><br>";
+
+						if( $_SESSION['method'] == 'getCourses' )
+						{
+								getCourses( $mysqli );
+								$_SESSION['method'] = '';
+						}
+						else if( $_SESSION['method'] == 'changePassword' )
+						{
+								if( $_SESSION['status'] == 0 )
+									echo "Failed to change password<br>";
+								else
+									echo "Password change successful<br>";
+								$_SESSION['method'] = '';
+						}
         ?>
     </body>
 </html>

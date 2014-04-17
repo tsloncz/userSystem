@@ -9,24 +9,25 @@
        exit();
     }
     // define variables and set to empty values
-    $pass1 = $pass2 = $type = "";
+    $pass1 = $pass2 = $type = $method = "";
     $loginId = $_SESSION['loginId'];
-		$method = $_POST["method"];
-		$_SESSION['method'] = $method;
     //echo $loginId . ' is user<br>';
     if ($_SERVER["REQUEST_METHOD"] == "POST")
     {
+      $method = test_input($_POST["method"]);
       $pass1 = test_input($_POST["pass1"]);
       $pass2 = test_input($_POST["pass2"]);
     }
 
 		if ( $method == 'getCourses' )
 		{
+				$_SESSION['method'] = $method;
 				header("Location: studentPage.php?");
 				$mysqli->close();
 		}
 		else if ( $method == 'changePassword' )
 		{
+			$_SESSION['method'] = $method;	
 		  if( $pass1 == $pass2 && $pass1 != "")
 		    changePassword( $mysqli, $pass1, $loginId );
 		  else
@@ -43,12 +44,10 @@
       $changePasswordQuery ="UPDATE user
                             SET password= '$pass'
                             WHERE userId = '$loginId'";
-      $changePasswordResult = $mysqli->query($changePasswordQuery);
-      $success = $changePasswordResult->num_rows;
-			if( $success == 0 )
-      	$_SESSION['status'] = 0;
+      if( $mysqli->query($changePasswordQuery) )
+		  		$_SESSION['status'] = 1;
 			else
-				$_SESSION['status'] = 1;
+					$_SESSION['status'] = 0;
       //$_SESSION['changePasswordSuccess'] = $mysqli->affected_rows;
       header("Location: studentPage.php?" . $mysqli->affected_rows);
       $mysqli->close();
