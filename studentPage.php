@@ -19,12 +19,12 @@ session_start();
             echo "<h3>Student Page</h3>";
             echo "<p>Logged in as<b> " . $_SESSION['loginId'] . "</b> ";
             echo "<a href=\"logout.php\">Logout</a></p>";
-            echo "<form method='post' action='student.php'>";
-            echo "Enter new password: <input type='text' name='pass1'></input><br>";
-            echo "Renter new password: <input type='text' name='pass2'></input><br>";
+            echo "<form method='post' action='student.php'><table><tr>";
+            echo "<td>Enter new password:</td><td><input type='text' name='pass1'></input></td></tr>";
+            echo "<tr><td>Renter new password:</td><td> <input type='text' name='pass2'></input></td></tr></table>";
 						echo "<input type='hidden' name='method' value='changePassword' />";
-            echo " <input type='submit' value='Change Password'></input>";
-            echo "</form>";
+            echo " <input type='submit' value='Change Password'></input><br>";
+            echo "</form><br>";
             
 						echo "<form method='post' action='student.php'>";
 						echo "<input type='hidden' name='method' value='getCourses' />";
@@ -43,6 +43,22 @@ session_start();
 								else
 									echo "Password change successful<br>";
 								$_SESSION['method'] = '';
+						}
+						else if( $_SESSION['method'] == 'register' )
+						{
+								if( $_SESSION['status'] == 0 )
+										echo "You didn't select any courses!";
+								else
+								{
+									$courseRegStatus = $_SESSION['coursesRegistered'];
+									//var_dump($courseRegStatus);
+									if( count($courseRegStatus > 0) )
+									{
+										foreach($courseRegStatus as $course)
+											echo $course['course'] . "<br>";
+										$_SESSION['coursesRegistered'] = [];
+									}
+								}
 						}
         ?>
     </body>
