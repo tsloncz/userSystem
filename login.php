@@ -19,7 +19,7 @@
   $view_query .= "userId = '" . $loginId . "' and password='";
   $view_query .= $password . "'";
   $view_query_result = $mysqli->query($view_query);
-	$found = $view_query_result->num_rows;
+  $found = $view_query_result->num_rows;
   if( $found != 0)
   {
     $row = $view_query_result->fetch_assoc();

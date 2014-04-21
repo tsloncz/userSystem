@@ -88,25 +88,46 @@
 
      die();
     }
-
+	// Check for all prereqs taken if transcript course not in prereqs then prereqs not satisfied
+	// Select all courses from transcript where sequencId less than course to register for
+	// SELECT courseNo FROM course WHERE NOT EXISTS in list of preques
+	// SELECT courseNo from transcript WHERE 
     function registerForCourse( $mysqli, $course, $sequenceId, $loginId )
     {
 		$prereqs = array();
-		$prereqQuery ="SELECT * FROM course
-                            WHERE sequenceId < '$sequenceId'";
+		// Find prereqs student hasn't taken
+		$prereqQuery ="SELECT C.courseNo as course FROM course C
+                            	WHERE C.sequenceId < '$sequenceId'
+								AND C.courseNo NOT IN(
+								SELECT T.courseNo from transcript T
+					   			WHERE T.userId='$loginId')";
 		$result = $mysqli->query($prereqQuery);
-		foreach( $result as $a )
-		{
-			$prereqs[] = $a['courseNo'];
+		$prereqs[] = $mysqli->affected_rows;
+		if($mysqli->affected_rows > 0 )
+			{
+			foreach( $result as $a )
+			{
+				$prereqs[] = $a['course'];
+			}
 		}
+		else 
+			$prereqs[] = "satisfied";
 		return $prereqs;
 	}
-
+/*
 	function checkPrereqs( $mysqli, $prereqs, $loginId )
     {
 		//check students transcript to see if all prereqs are staisfied
+		foreach( $prereqs as $a )
+		{
+			$prereqSatisfactionQuery ="SELECT courseNo FROM transcript
+		                        	WHERE userId='$loginId' AND courseNo=$a['courseNo']";
+			$result = $mysqli->query($prereqQuery);
+			$found = $result->num_rows;
+			$prereqs[] = array('course'=>$a['courseNo'],'fail'=>$found);
+		}
 
-	}
+	}*/
     /* close connection */
     $mysqli->close();
 ?>

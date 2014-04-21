@@ -56,7 +56,7 @@ session_start();
 									{
 										foreach($courseRegStatus as $course)
 										{
-											echo "<br>" . $course['course'] . " has prereqs ";
+											echo "<br>" . $course['course'] . " has prereqs you haven't taken ";
 											$prereqs = $course['prereqs'];
 											foreach($prereqs as $course)
 											{
