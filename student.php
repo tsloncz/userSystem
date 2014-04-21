@@ -43,18 +43,23 @@
 				$courses = $_POST['RegisterForCourse'];
 				if( count($courses) > 0 )
 				{
-					$courses = $_POST['RegisterForCourse'];
 					foreach($courses as $course)
 					{
-							$selectCourseQuery ="SELECT * FROM course
-                            WHERE courseNo = '$course'";
-							$result = $mysqli->query($selectCourseQuery);
-      				foreach( $result as $a )
-							{	
-									$registrationStatus[] = registerForCourse($mysqli, $a, $loginId);
-									$course = $a['courseNo'];
-									$checked[] = array('course'=>$course);
-							}
+						$a = new registerSet();
+						$a->setClasses( $courses );
+						$selectCourseQuery ="SELECT * FROM course
+                       						 WHERE courseNo = '$course'";
+						$result = $mysqli->query($selectCourseQuery);
+  						foreach( $result as $a )
+						{	
+							$course = $a['courseNo'];
+							$sequenceId = $a['sequenceId'];
+							$available = $a['availableSeats'];
+							if( $available == 0 )
+								$checked[] = array('course'=>$course,'fail'=>"FULL");
+							else
+								$checked[] = array('course'=>$course, 'prereqs'=>registerForCourse($mysqli, $course, $sequenceId,  $loginId));
+						}
 					}
 					$_SESSION['method'] = $method;
 					$_SESSION['coursesRegistered'] = $checked;
@@ -76,7 +81,7 @@
       if( $mysqli->query($changePasswordQuery) )
 		  		$_SESSION['status'] = 1;
 			else
-					$_SESSION['status'] = 0;
+				$_SESSION['status'] = 0;
       //$_SESSION['changePasswordSuccess'] = $mysqli->affected_rows;
       header("Location: studentPage.php?" . $mysqli->affected_rows);
       $mysqli->close();
@@ -84,15 +89,24 @@
      die();
     }
 
-    function registerForCourse( $mysqli, $a, $loginId )
+    function registerForCourse( $mysqli, $course, $sequenceId, $loginId )
     {
-
+		$prereqs = array();
+		$prereqQuery ="SELECT * FROM course
+                            WHERE sequenceId < '$sequenceId'";
+		$result = $mysqli->query($prereqQuery);
+		foreach( $result as $a )
+		{
+			$prereqs[] = $a['courseNo'];
 		}
+		return $prereqs;
+	}
 
-		function checkPrereqs( $mysqli, $a, $loginId )
+	function checkPrereqs( $mysqli, $prereqs, $loginId )
     {
+		//check students transcript to see if all prereqs are staisfied
 
-		}
+	}
     /* close connection */
     $mysqli->close();
 ?>

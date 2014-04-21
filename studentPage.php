@@ -55,10 +55,19 @@ session_start();
 									if( count($courseRegStatus > 0) )
 									{
 										foreach($courseRegStatus as $course)
-											echo $course['course'] . "<br>";
+										{
+											echo "<br>" . $course['course'] . " has prereqs ";
+											$prereqs = $course['prereqs'];
+											foreach($prereqs as $course)
+											{
+												echo " " . $course . ", ";;
+											}
+										}
 										$_SESSION['coursesRegistered'] = [];
 									}
 								}
+							
+								$_SESSION['method'] = '';
 						}
         ?>
     </body>

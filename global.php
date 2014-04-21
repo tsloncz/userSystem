@@ -46,4 +46,23 @@ function getCourses( $mysqli )
       echo " <input type='submit' value='Register For Courses'></input></form>";
 		}
 }
+
+class registerSet
+{
+	private $userId;
+	// array of courses to register for
+	private $courses = array();
+	// array of responses for registration status for each course
+	private $response = array();
+
+	function setClasses( $classes )
+	{
+		$this->classes = $classes;
+	}
+
+	function getResponses( )
+	{
+		return response;
+	}
+}
 ?>
