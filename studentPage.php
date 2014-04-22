@@ -46,20 +46,22 @@ session_start();
 						else if( $_SESSION['method'] == 'register' )
 						{
 								if( $_SESSION['status'] == 0 )
-										echo "You didn't select any courses!";
-								else
+                                {
+								  echo "You didn't select any courses!";
+                                }
+                                else
 								{
 									$courseRegStatus = $_SESSION['coursesRegistered'];
-									var_dump($courseRegStatus);
+									//var_dump($courseRegStatus);
 									if( count($courseRegStatus > 0) )
 									{
 										foreach($courseRegStatus as $course)
 										{
                                             $prereqs =
                                               $course['prereqsSatisfied'];
-                                            var_dump($prereqs);
+                                            //var_dump($prereqs);
 											if( $prereqs > 0 )
-                                              echo "<br>" . $course['course'] . " has prereqs you haven't taken ";
+                                              echo "<br>Registration failed: " . $course['course'] . " has prereqs you haven't taken ";
                                             else
                                               echo "<br>" . $course['course'] .
                                                 " registered for successfully";

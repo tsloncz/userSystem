@@ -57,7 +57,9 @@
 		}
 		else if ( $method == 'register' )
 		{
-				$courses = $_POST['RegisterForCourse'];
+          $_SESSION['method'] = $method;
+		  $courses = $_POST['RegisterForCourse'];
+          //If count(courses) = 0 then no classes were selected
 				if( count($courses) > 0 )
 				{
 					foreach($courses as $course)
@@ -70,17 +72,22 @@
 						$result = $mysqli->query($selectCourseQuery);
   						foreach( $result as $row )
 						{
+                            //Make sure cass is available
 							$a->available = $row['availableSeats'];
                             $a->sequenceId = $row['sequenceId'];
+                            //Check if student satisfied prereqs
                             $a->prereqsSatisfied = checkPrereqs($mysqli, $a);
+                            // Only register if prereqs complete
                             if($a->prereqsSatisfied == 0)
                               $a->enrolled = enrollForCourse($mysqli, $a);
+                            // Add array of courses student wanted to register
+                            // for and the status of registration
+                            // Need as array to assign to SESSION variable
                             $checked[] = $a->getStatus();
 						}
 					}
                     //unlock row
                     $mysqli->query("commit");
-					$_SESSION['method'] = $method;
 					$_SESSION['coursesRegistered'] = $checked;
 					header("Location: studentPage.php?");
 				}
@@ -98,10 +105,9 @@
                             SET password= '$pass'
                             WHERE userId = '$loginId'";
       if( $mysqli->query($changePasswordQuery) )
-		  		$_SESSION['status'] = 1;
-			else
-				$_SESSION['status'] = 0;
-      //$_SESSION['changePasswordSuccess'] = $mysqli->affected_rows;
+ 	      $_SESSION['status'] = 1;
+	  else
+	      $_SESSION['status'] = 0;
       header("Location: studentPage.php?" . $mysqli->affected_rows);
       $mysqli->close();
 

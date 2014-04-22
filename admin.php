@@ -51,11 +51,14 @@
                              SET password = 'default'
                              WHERE userId = '$loginId'";
       $resetPasswordResult = $mysqli->query($resetPasswordQuery);
-      $success = $resetPasswordResult->num_rows;
-			if( $success == 0 )
-      	$_SESSION['status'] = 0;
-			else
-				$_SESSION['status'] = 1;
+	  if( $mysqli->affected_rows )
+      {
+        $_SESSION['status'] = 1;
+	  }
+      else
+      {
+		$_SESSION['status'] = 0;
+      }
     }
 
     function deleteUser( $mysqli, $loginId )
@@ -63,44 +66,55 @@
       $deleteUserQuery = "DELETE from user
                           WHERE userId = '$loginId'";
       $deleteUserResult = $mysqli->query($deleteUserQuery);
-      $success = $deleteUserResult->num_rows;
-			if( $success == 0 )
-      	$_SESSION['status'] = 0;
-			else
-				$_SESSION['status'] = 1;
+      if( $mysqli->affected_rows )
+      {
+      	$_SESSION['status'] = 1;
+      }	  
+      else
+      {
+	    $_SESSION['status'] = 0;
+      }
     }
 
     function addUser( $mysqli, $loginId, $password )
     {
       $addUserQuery = "INSERT INTO user VALUES ('$loginId', '$password', '$isAdmin')";
       $addUserResult = $mysqli->query($addUserQuery);
-      $success = $addUserResult->num_rows;
-			if( $success == 0 )
-      	$_SESSION['status'] = 0;
-			else
-				$_SESSION['status'] = 1;
+	  if( $mysqli->affected_rows )
+      {
+      	$_SESSION['status'] = 1;
+      }
+      else
+      {
+		$_SESSION['status'] = 0;
+      }
     }
 
     function updateUser( $mysqli, $loginId, $password, $isAdmin )
     {
-			if( $password == '')
-			{	
+      //If no password was entered leave as is
+	    if( $password == '')
+	    {	
 		    $updateUserQuery = "UPDATE user
-														SET isAdmin='$isAdmin'
-														where userId='$loginId'";
-			}	
-			else
-			{
-		    $updateUserQuery = "UPDATE user
-														SET password='$password',isAdmin='$idAdmin'
-														where userId='$loginId'";
-			}
+								SET isAdmin='$isAdmin'
+								WHERE userId='$loginId'";
+		}	
+		else
+		{
+	        $updateUserQuery = "UPDATE user
+								SET password='$password',isAdmin='$idAdmin'
+								WHERE userId='$loginId'";
+		}
       $updateUserResult = $mysqli->query($updateUserQuery);
-			$success = $updateUserResult->num_rows;
-			if( $success == 0 )
-      	$_SESSION['status'] = 0;
-			else
-				$_SESSION['status'] = 1;
+	  $success = $updateUserResult->num_rows;
+	  if( $mysqli->affected_rows )
+      {
+      	  $_SESSION['status'] = 1;
+      }
+      else
+      {
+		  $_SESSION['status'] = 0;
+      }
     }
 
     $mysqli->close();
