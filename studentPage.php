@@ -22,12 +22,11 @@ session_start();
             echo "<form method='post' action='student.php'><table><tr>";
             echo "<td>Enter new password:</td><td><input type='text' name='pass1'></input></td></tr>";
             echo "<tr><td>Renter new password:</td><td> <input type='text' name='pass2'></input></td></tr></table>";
-						echo "<input type='hidden' name='method' value='changePassword' />";
+			echo "<input type='hidden' name='method' value='changePassword' />";
             echo " <input type='submit' value='Change Password'></input><br>";
             echo "</form><br>";
-            
-						echo "<form method='post' action='student.php'>";
-						echo "<input type='hidden' name='method' value='getCourses' />";
+			echo "<form method='post' action='student.php'>";
+			echo "<input type='hidden' name='method' value='getCourses' />";
             echo " <input type='submit' value='Find Available Courses'></input>";
             echo "</form><br>";
 
@@ -51,17 +50,24 @@ session_start();
 								else
 								{
 									$courseRegStatus = $_SESSION['coursesRegistered'];
-									//var_dump($courseRegStatus);
+									var_dump($courseRegStatus);
 									if( count($courseRegStatus > 0) )
 									{
 										foreach($courseRegStatus as $course)
 										{
-											echo "<br>" . $course['course'] . " has prereqs you haven't taken ";
-											$prereqs = $course['prereqs'];
-											foreach($prereqs as $course)
+                                            $prereqs =
+                                              $course['prereqsSatisfied'];
+                                            var_dump($prereqs);
+											if( $prereqs > 0 )
+                                              echo "<br>" . $course['course'] . " has prereqs you haven't taken ";
+                                            else
+                                              echo "<br>" . $course['course'] .
+                                                " registered for successfully";
+                                            /*//only need to list prereqs
+                                             foreach($prereqs as $course)
 											{
 												echo " " . $course . ", ";;
-											}
+											}*/
 										}
 										$_SESSION['coursesRegistered'] = [];
 									}

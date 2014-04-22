@@ -1,4 +1,21 @@
 <?php
+  class registerSet
+  {
+    public $userId;
+    public $course;
+    public $sequencyId;
+    // If prereqs are complete then value = 0
+    public $prereqsSatisfied = 1;
+    public $available;
+    public $enrolled = 0;
+    // Need array form for assignment to $_SESSION variable
+    function getStatus()
+    {
+      return array('course'=>$this->course,
+                    'prereqsSatisfied'=>$this->prereqsSatisfied,
+                    'enrolled' => $this->enrolled);
+    }
+  }
 	session_start(); 
     include 'global.php';
     $mysqli = new mysqli($host, $user, $pass,$db);
@@ -45,22 +62,24 @@
 				{
 					foreach($courses as $course)
 					{
-						$a = new registerSet();
-						$a->setClasses( $courses );
+                        $a = new registerSet();
+                        $a->course = $course ;
+                        $a->userId = $loginId;
 						$selectCourseQuery ="SELECT * FROM course
                        						 WHERE courseNo = '$course'";
 						$result = $mysqli->query($selectCourseQuery);
-  						foreach( $result as $a )
-						{	
-							$course = $a['courseNo'];
-							$sequenceId = $a['sequenceId'];
-							$available = $a['availableSeats'];
-							if( $available == 0 )
-								$checked[] = array('course'=>$course,'fail'=>"FULL");
-							else
-								$checked[] = array('course'=>$course, 'prereqs'=>registerForCourse($mysqli, $course, $sequenceId,  $loginId));
+  						foreach( $result as $row )
+						{
+							$a->available = $row['availableSeats'];
+                            $a->sequenceId = $row['sequenceId'];
+                            $a->prereqsSatisfied = checkPrereqs($mysqli, $a);
+                            if($a->prereqsSatisfied == 0)
+                              $a->enrolled = enrollForCourse($mysqli, $a);
+                            $checked[] = $a->getStatus();
 						}
 					}
+                    //unlock row
+                    $mysqli->query("commit");
 					$_SESSION['method'] = $method;
 					$_SESSION['coursesRegistered'] = $checked;
 					header("Location: studentPage.php?");
@@ -88,13 +107,8 @@
 
      die();
     }
-	// Check for all prereqs taken if transcript course not in prereqs then prereqs not satisfied
-	// Select all courses from transcript where sequencId less than course to register for
-	// SELECT courseNo FROM course WHERE NOT EXISTS in list of preques
-	// SELECT courseNo from transcript WHERE 
     function registerForCourse( $mysqli, $course, $sequenceId, $loginId )
     {
-		$prereqs = array();
 		// Find prereqs student hasn't taken
 		$prereqQuery ="SELECT C.courseNo as course FROM course C
                             	WHERE C.sequenceId < '$sequenceId'
@@ -102,32 +116,31 @@
 								SELECT T.courseNo from transcript T
 					   			WHERE T.userId='$loginId')";
 		$result = $mysqli->query($prereqQuery);
-		$prereqs[] = $mysqli->affected_rows;
-		if($mysqli->affected_rows > 0 )
-			{
-			foreach( $result as $a )
-			{
-				$prereqs[] = $a['course'];
-			}
-		}
-		else 
-			$prereqs[] = "satisfied";
+		$prereqs = $mysqli->affected_rows;
 		return $prereqs;
 	}
-/*
-	function checkPrereqs( $mysqli, $prereqs, $loginId )
-    {
-		//check students transcript to see if all prereqs are staisfied
-		foreach( $prereqs as $a )
-		{
-			$prereqSatisfactionQuery ="SELECT courseNo FROM transcript
-		                        	WHERE userId='$loginId' AND courseNo=$a['courseNo']";
-			$result = $mysqli->query($prereqQuery);
-			$found = $result->num_rows;
-			$prereqs[] = array('course'=>$a['courseNo'],'fail'=>$found);
-		}
 
-	}*/
+  function enrollForCourse($mysqli, $a)
+  {
+    $enrollQuery = "UPDATE course
+                    SET availableSeats = (availableSeats - 1)
+                    WHERE courseNo = '$a->course' AND availableSeats > 0";
+    $result = $mysqli->query($enrollQuery);
+    return $mysqli->affected_rows;
+  }
+
+	function checkPrereqs( $mysqli, $a )
+    {
+      // Find prereqs student hasn't taken
+      $prereqQuery ="SELECT C.courseNo as course FROM course C
+                     WHERE C.sequenceId < '$a->sequenceId'
+                     AND C.courseNo NOT IN(
+                     SELECT T.courseNo from transcript T
+                     WHERE T.userId='$a->userId')";
+	  $result = $mysqli->query($prereqQuery);
+      return $mysqli->affected_rows;
+
+	}
     /* close connection */
     $mysqli->close();
 ?>
